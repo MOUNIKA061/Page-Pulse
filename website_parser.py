@@ -26,14 +26,16 @@ def analyze_website(url):
         response_time = round(end_time - start_time, 2)
     except requests.exceptions.Timeout:
         return {"error": "Request Timed Out"}
-    except requests.exceptions.RequestException:
-        return {"error": "Unable to Access Website"}
+    except requests.exceptions.RequestException as exc:
+        return {"error": f"Unable to access website: {str(exc)}"}
+    except Exception as exc:
+        return {"error": f"Unexpected request error: {str(exc)}"}
 
     content_type = response.headers.get("Content-Type", "")
     if "text/html" not in content_type:
         return {"error": "This is not an HTML page"}
 
-    soup = BeautifulSoup(response.text, "lxml")
+    soup = BeautifulSoup(response.text, "html.parser")
 
     title = _clean_text(soup.title.string) if soup.title and soup.title.string else "No Title"
 

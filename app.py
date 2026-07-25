@@ -19,7 +19,11 @@ def analyze():
     if not url:
         return jsonify({"error": "Please enter a website URL."}), 400
 
-    result = analyze_website(url)
+    try:
+        result = analyze_website(url)
+    except Exception as exc:
+        print("Error analyzing website:", exc)
+        return jsonify({"error": "Unable to analyze website."}), 500
 
     if "error" in result:
         return jsonify(result), 400
