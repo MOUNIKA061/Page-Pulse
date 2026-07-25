@@ -1,7 +1,6 @@
 import time
 import requests
 from bs4 import BeautifulSoup
-import validators
 from urllib.parse import urlparse
 
 
@@ -11,8 +10,13 @@ def _clean_text(value):
     return " ".join(str(value).split())
 
 
+def _is_valid_url(url):
+    parsed = urlparse(url)
+    return parsed.scheme in ("http", "https") and bool(parsed.netloc)
+
+
 def analyze_website(url):
-    if not validators.url(url):
+    if not _is_valid_url(url):
         return {"error": "Invalid URL"}
 
     try:
